@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAINEL EXECUTIVO DE PROJETOS V2 — APE</title>
+  <meta name="description" content="Painel Executivo de Projetos V2 - Visão Estratégica & Drill-Through APE">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       HEADER EXECUTIVO
+       ======================================================================== -->
+  <header class="executive-header">
+    <div class="header-container">
+      <div class="header-content">
+        <div class="header-brand">
+          <img src="POLI_HORIZONTAL_PNG.png" alt="Logo Detran" class="brand-logo">
+          <div class="brand-title">
+            <h1>PORTFÓLIO DE PROJETOS ESTRATÉGICOS</h1>
+            <div class="brand-subtitle">
+              <span>Data Base: <strong id="headerReferenceDate">22/09/2026</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn-action btn-primary" id="btnPrintReport" title="Exportar ou Imprimir visão executiva">
+            Exportar PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN APP CONTAINER (DRILL-THROUGH VIEWS)
+       ======================================================================== -->
+  <main class="main-container">
+
+    <!-- ======================================================================
+         VIEW 1: VISÃO EXECUTIVA (OVERVIEW / CARDS)
+         ====================================================================== -->
+    <div id="viewOverview" class="view-section active">
+
+      <!-- 1. KPI SUMMARY CARDS (FILTROS RÁPIDOS) -->
+      <section class="kpi-grid" aria-label="Indicadores Executivos">
+        <div class="kpi-card kpi-total" data-filter="ALL" role="button" tabindex="0" title="Clique para exibir todos os projetos">
+          <div class="kpi-top">
+            <span class="kpi-label">Total de Projetos</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpiTotal">19</span>
+          </div>
+          <div class="kpi-bar-track">
+            <div class="kpi-bar-fill" id="kpiTotalBar" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-completed" data-filter="concluido" role="button" tabindex="0" title="Clique para filtrar projetos Concluídos">
+          <div class="kpi-top">
+            <span class="kpi-label">Concluídos</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpiConcluido">0</span>
+          </div>
+          <div class="kpi-bar-track">
+            <div class="kpi-bar-fill" id="kpiConcluidoBar" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-ongoing" data-filter="andamento" role="button" tabindex="0" title="Clique para filtrar projetos Em Andamento">
+          <div class="kpi-top">
+            <span class="kpi-label">Em Andamento</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpiAndamento">19</span>
+          </div>
+          <div class="kpi-bar-track">
+            <div class="kpi-bar-fill" id="kpiAndamentoBar" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-problem" data-filter="problema" role="button" tabindex="0" title="Clique para filtrar projetos Com Problema">
+          <div class="kpi-top">
+            <span class="kpi-label">Com Problema</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpiProblema">12</span>
+          </div>
+          <div class="kpi-bar-track">
+            <div class="kpi-bar-fill" id="kpiProblemaBar" style="width: 63%;"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-attention" data-filter="atencao" role="button" tabindex="0" title="Clique para filtrar projetos Em Atenção">
+          <div class="kpi-top">
+            <span class="kpi-label">Em Atenção</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpiAtencao">4</span>
+          </div>
+          <div class="kpi-bar-track">
+            <div class="kpi-bar-fill" id="kpiAtencaoBar" style="width: 21%;"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-healthy" data-filter="saudavel" role="button" tabindex="0" title="Clique para filtrar projetos Saudáveis">
+          <div class="kpi-top">
+            <span class="kpi-label">Saudáveis</span>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpiSaudavel">3</span>
+          </div>
+          <div class="kpi-bar-track">
+            <div class="kpi-bar-fill" id="kpiSaudavelBar" style="width: 16%;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. EXECUTIVE PROJECT SHOWCASE (GRID DE CARDS EXECUTIVOS) -->
+      <section class="showcase-section">
+        <div class="section-header-row">
+          <p class="section-subheading">Clique em qualquer projeto para abrir a Visão Detalhada 360º</p>
+        </div>
+
+        <!-- Container dinâmico dos projetos -->
+        <div id="projectsContainer" class="projects-grid">
+          <!-- Gerado dinamicamente via app.js -->
+        </div>
+      </section>
+
+      <!-- 3. LEGENDA DOS PADRÕES DE SITUAÇÃO -->
+      <section class="badges-legend-section" id="badgesLegendSection" aria-label="Legenda de Situação dos Projetos">
+        <div class="legend-card">
+          <div class="legend-header">
+            <h3 class="legend-title">Critérios e Padrões de Situação</h3>
+          </div>
+          <div class="legend-grid">
+            <div class="legend-item legend-saudavel">
+              <div class="legend-badge-wrapper">
+                <span class="badge-pill status-saudavel">Saudável</span>
+              </div>
+              <div class="legend-item-content">
+                <strong class="legend-item-title">Em conformidade com o planejado</strong>
+                <p class="legend-item-desc">
+                  Projetos que seguem dentro do cronograma e escopo acordados, com entregas e marcos cumpridos sem impeditivos. A execução física avança em ritmo compatível com o consumo do prazo e não há bloqueios críticos ou pontos de atenção em aberto.
+                </p>
+              </div>
+            </div>
+
+            <div class="legend-item legend-atencao">
+              <div class="legend-badge-wrapper">
+                <span class="badge-pill status-atencao">Atenção</span>
+              </div>
+              <div class="legend-item-content">
+                <strong class="legend-item-title">Desvios gerenciáveis ou dependências externas</strong>
+                <p class="legend-item-desc">
+                  Projetos que apresentam desvios moderados de prazo, necessidade de ajustes em homologação, dependência de ações/licitações de outros órgãos ou bloqueios temporários (aprovações pendentes, escopo congelado), porém com planos de mitigação em andamento.
+                </p>
+              </div>
+            </div>
+
+            <div class="legend-item legend-problema">
+              <div class="legend-badge-wrapper">
+                <span class="badge-pill status-problema">Problema</span>
+              </div>
+              <div class="legend-item-content">
+                <strong class="legend-item-title">Atraso crítico e ausência de previsão</strong>
+                <p class="legend-item-desc">
+                  Projetos com atraso severo no cronograma, paralisação de entregas essenciais e indefinição de prazos finais decorrente de fornecedores/parceiros externos ou impeditivos de integração, impactando diretamente os objetivos estratégicos.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ======================================================================
+         VIEW 2: DETALHAMENTO DO PROJETO (DRILL-THROUGH)
+         ====================================================================== -->
+    <div id="viewDetail" class="view-section">
+
+      <!-- Navigation & Top Action Bar -->
+      <div class="detail-nav-bar">
+        <button class="btn-back" id="btnBackToOverview" title="Retornar à Visão Executiva">
+          ← Voltar para Visão Executiva
+        </button>
+
+        <div class="detail-project-stepper">
+          <button class="btn-step" id="btnPrevProject" title="Ver projeto anterior">‹ Anterior</button>
+          <span class="stepper-indicator" id="detailProjectIndex">1 de 19</span>
+          <button class="btn-step" id="btnNextProject" title="Ver próximo projeto">Próximo ›</button>
+        </div>
+
+        <button class="btn-action" id="btnPrintProjectDetail" title="Imprimir detalhamento deste projeto">
+          Imprimir Ficha
+        </button>
+      </div>
+
+      <!-- Detail Project Banner / Hero -->
+      <section class="detail-hero-card" id="detailHeroCard">
+        <div class="detail-hero-content">
+          <div class="detail-hero-header">
+            <div class="detail-title-group">
+              <h2 class="detail-project-title" id="detailProjectTitle">NOME DO PROJETO</h2>
+              <div class="detail-meta-cards">
+                <div class="date-metric-item">
+                  <span class="date-metric-label">Área</span>
+                  <strong class="date-metric-value" id="detailProjectArea">DFT</strong>
+                </div>
+                <div class="date-metric-item">
+                  <span class="date-metric-label">Gestão</span>
+                  <strong class="date-metric-value" id="detailProjectGp">Isabella Monteiro</strong>
+                </div>
+                <div class="date-metric-item">
+                  <span class="date-metric-label">Data da Última RAP</span>
+                  <strong class="date-metric-value" id="detailProjectRap">28/08/2026</strong>
+                </div>
+                <div class="date-metric-item">
+                  <span class="date-metric-label">Portaria</span>
+                  <strong class="date-metric-value" id="detailProjectPortaria">—</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-hero-status-badges" id="detailHeroBadges">
+            <span class="detail-badge badge-status status-andamento" id="detailBadgeStatus">Em andamento</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card: Situação & Justificativa da Situação -->
+      <section class="detail-card detail-situacao-card" id="detailSituacaoCard">
+        <div class="detail-card-header detail-situacao-header">
+          <div id="detailSituacaoBadgeContainer">
+            <span class="detail-badge status-atencao" id="detailCardBadgeSituacao">Atenção</span>
+          </div>
+        </div>
+        <div class="detail-card-body">
+          <div class="rap-report-box" id="detailSituacaoJustificativa">
+            <p class="rap-report-text">Nenhuma justificativa informada.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card: O que foi feito na última semana -->
+      <section class="detail-card detail-ultima-semana-card" id="detailUltimaSemanaCard">
+        <div class="detail-card-header detail-ultima-semana-header">
+          <h3 class="detail-card-title">O que foi feito na última semana</h3>
+          <span class="detail-periodo-badge" id="detailUltimaSemanaPeriodo"></span>
+        </div>
+        <div class="detail-card-body">
+          <div class="rap-report-box" id="detailUltimaSemanaConteudo">
+            <p class="rap-report-text">Nenhum registro informado.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Detail Grid of Executive Blocks -->
+      <div class="detail-blocks-grid">
+
+        <!-- BLOCO 1: EXECUÇÃO & CRONOGRAMA -->
+        <div class="detail-card" id="detailCardExecucao">
+          <div class="detail-card-header">
+            <h3 class="detail-card-title">Execução & Prazos</h3>
+          </div>
+          <div class="detail-card-body">
+            <!-- Progress Section -->
+            <div class="exec-gauge-container">
+              <div class="exec-gauge-header">
+                <span class="exec-gauge-label">Progresso Físico Realizado</span>
+                <span class="exec-gauge-value" id="detailPctExec">79%</span>
+              </div>
+              <div class="exec-gauge-track">
+                <div class="exec-gauge-fill" id="detailPctExecBar" style="width: 79%;"></div>
+              </div>
+            </div>
+
+            <!-- Date Metrics Grid -->
+            <div class="date-metrics-grid">
+              <div class="date-metric-item">
+                <span class="date-metric-label">Data de Início</span>
+                <strong class="date-metric-value" id="detailDataInicio">25/04/2024</strong>
+              </div>
+              <div class="date-metric-item">
+                <span class="date-metric-label">Fim Planejado</span>
+                <strong class="date-metric-value" id="detailDataPlan">30/06/2025</strong>
+              </div>
+              <div class="date-metric-item">
+                <span class="date-metric-label">Fim Atual (Previsão)</span>
+                <strong class="date-metric-value" id="detailDataAtual">17/02/2027</strong>
+              </div>
+              <div class="date-metric-item">
+                <span class="date-metric-label">% Consumo Prazo</span>
+                <strong class="date-metric-value" id="detailConsumoPrazo">86%</strong>
+              </div>
+              <div class="date-metric-item highlight-desvio" id="detailDesvioBox">
+                <span class="date-metric-label">Desvio de Cronograma</span>
+                <strong class="date-metric-value" id="detailDesvioValue">+600 dias (+139%)</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BLOCO 2: SITUAÇÃO ATUAL / ÚLTIMAS ATUALIZAÇÕES -->
+        <div class="detail-card" id="detailCardSituacaoAtual">
+          <div class="detail-card-header">
+            <h3 class="detail-card-title">Situação Atual / Últimas Atualizações</h3>
+          </div>
+          <div class="detail-card-body">
+            <div class="rap-report-box" id="detailRapReport">
+              <p class="rap-report-text">Aguardando licitação da PRF para a aquisição das câmeras.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- BLOCO 3: GESTÃO DE RISCOS -->
+        <div class="detail-card" id="detailCardRiscos">
+          <div class="detail-card-header">
+            <h3 class="detail-card-title">Gestão de Riscos</h3>
+          </div>
+          <div class="detail-card-body" id="detailRisksContainer">
+            <!-- Gerado dinamicamente -->
+          </div>
+        </div>
+
+        <!-- BLOCO 4: PONTOS DE ATENÇÃO & IMPEDIMENTOS -->
+        <div class="detail-card" id="detailCardAtencao">
+          <div class="detail-card-header">
+            <h3 class="detail-card-title">Pontos de Atenção & Impedimentos</h3>
+          </div>
+          <div class="detail-card-body" id="detailAttentionContainer">
+            <!-- Gerado dinamicamente -->
+          </div>
+        </div>
+
+        <!-- BLOCO 5: PRÓXIMOS PASSOS -->
+        <div class="detail-card" id="detailCardProximosPassos">
+          <div class="detail-card-header">
+            <h3 class="detail-card-title">Próximos Passos</h3>
+          </div>
+          <div class="detail-card-body" id="detailNextStepsContainer">
+            <!-- Gerado dinamicamente -->
+          </div>
+        </div>
+
+        <!-- BLOCO 6: PENDÊNCIAS -->
+        <div class="detail-card" id="detailCardPendencias">
+          <div class="detail-card-header">
+            <h3 class="detail-card-title">Pendências</h3>
+          </div>
+          <div class="detail-card-body" id="detailDecisionsContainer">
+            <!-- Gerado dinamicamente -->
+          </div>
+        </div>
+
+        <!-- BLOCO 7: ESCOPO -->
+        <div class="detail-card" id="detailCardEscopo">
+          <div class="detail-card-header">
+            <h3 class="detail-card-title">Escopo</h3>
+          </div>
+          <div class="detail-card-body" id="detailEscopoContainer">
+            <!-- Gerado dinamicamente -->
+          </div>
+        </div>
+
+        <!-- BLOCO 8: OBJETIVOS ESTRATÉGICOS -->
+        <div class="detail-card" id="detailCardObjetivos">
+          <div class="detail-card-header">
+            <h3 class="detail-card-title">Objetivos Estratégicos</h3>
+          </div>
+          <div class="detail-card-body" id="detailObjetivosContainer">
+            <!-- Gerado dinamicamente -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Return Button -->
+      <div class="detail-bottom-nav">
+        <button class="btn-back" id="btnBackToOverviewBottom">
+          ← Voltar para Visão Executiva
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- SheetJS CDN para suporte a leitura da planilha -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- Base de Dados Inicial -->
+  <script src="data.js"></script>
+
+  <!-- Script da Versão 2 -->
+  <script src="app.js"></script>
+</body>
+</html>
